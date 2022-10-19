@@ -54,13 +54,13 @@ int main(){
 }
 
 //for min queries:
-// void insert(ll i,ll l,ll r,line val){
-//   	if(i<0 or i>maxn)return;
+// void insert(ll idx,ll l,ll r,line y){
+//   	if(idx<0 or idx>maxn)return;
 //     int mid=(l+r)>>1;
-//     if(val(mid)<tree[i](mid))swap(val,tree[i]);
-//     if(val(l)>tree[i](l)&&val(r)>tree[i](r))return ;
-//     if(val(l)<tree[i](l))insert(i*2,l,mid,val);
-//     else insert(i*2+1,mid+1,r,val);
+//     if(y(mid)<tree[idx](mid))swap(y,tree[idx]);
+//     if(y(l)>tree[idx](l) and y(r)>tree[idx](r))return ;
+//     if(y(l)<tree[idx](l))insert(idx*2,l,mid,y);
+//     else insert(idx*2+1,mid+1,r,y);
 // }
 // ll query(ll idx,ll l, ll r, ll x){
 // 	if(l==r)return tree[idx](x);
