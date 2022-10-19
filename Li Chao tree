@@ -1,1 +1,54 @@
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<int,int>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n";
+
+const ll maxn=2e5+5;
+struct line{
+	ll m,c;
+	ll operator()(ll x){return m*x+c;}
+};
+line tree[maxn<<2];
+void insert(ll idx,ll l,ll r,line y){
+	ll mid=l+r>>1;
+	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
+  	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
+  	if(y(l)>tree[idx](l))insert(idx*2,l,mid,y);
+  	else insert(idx*2+1,mid+1,r,y);
+}
+ll query(ll idx,ll l, ll r, ll x){
+	if(l==r)return tree[idx](x);
+	ll mid=l+r>>1;
+	ll res=max(query(idx*2,l,mid,x),query(idx*2+1,mid+1,r,x));
+  	return max(res,tree[idx](x));
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+    ll n;cin>>n;
+    while(n--){
+		ll o;cin>>o;
+		if(o==1){
+			line y;cin>>y.m>>y.c;
+			insert(1,0,maxn,y);
+		}else{
+			ll x;cin>>x;
+			cout<<query(1,0,maxn,x)<<endl;
+		}
+	}
+	return 0;
+}
 
