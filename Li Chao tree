@@ -15,14 +15,15 @@ using namespace std;
 #define debug(x) cerr<<#x<<"="<<x<<"\n"
 #define endl "\n";
 
-const ll maxn=2e5+5;
+// for max queries 
+const ll maxn=1e6+5;
 struct line{
 	ll m,c;
 	ll operator()(ll x){return m*x+c;}
 };
 line tree[maxn<<2];
 void insert(ll idx,ll l,ll r,line y){
-	if(idx<0 or idx>maxn)return; // not necessary here i think , but safe to have 
+	if(l==r)return;
 	ll mid=l+r>>1;
 	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
   	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
@@ -53,18 +54,24 @@ int main(){
 	return 0;
 }
 
-//for min queries:
-// void insert(ll idx,ll l,ll r,line y){
-//   	if(idx<0 or idx>maxn)return;
-//     int mid=(l+r)>>1;
-//     if(y(mid)<tree[idx](mid))swap(y,tree[idx]);
-//     if(y(l)>tree[idx](l) and y(r)>tree[idx](r))return ;
-//     if(y(l)<tree[idx](l))insert(idx*2,l,mid,y);
-//     else insert(idx*2+1,mid+1,r,y);
-// }
-// ll query(ll idx,ll l, ll r, ll x){
-// 	if(l==r)return tree[idx](x);
-// 	ll mid=l+r>>1;
-// 	ll res=min(query(idx*2,l,mid,x),query(idx*2+1,mid+1,r,x));
-//   	return min(res,tree[idx](x));
-// }
+// min queries 
+const ll maxn=1e6+5;
+struct line{
+	ll m=0,c=1e18;
+	ll operator()(ll x){return m*x+c;}
+};
+line tree[maxn<<2];
+void insert(ll idx,ll l,ll r,line y){
+  	if(l==r)return;
+    ll mid=(l+r)>>1;
+    if(y(mid)<tree[idx](mid))swap(y,tree[idx]);
+	if(y(l)>tree[idx](l) and y(r)>tree[idx](r))return ;
+    if(y(l)<tree[idx](l))insert(idx*2,l,mid,y);
+    else insert(idx*2+1,mid+1,r,y);
+}
+ll query(ll idx,ll l, ll r, ll x){
+	if(l==r)return tree[idx](x);
+	ll mid=l+r>>1;
+	if(x<=mid)return min(tree[idx](x),query(idx*2,l,mid,x));
+	return min(tree[idx](x),query(idx*2+1,mid+1,r,x));
+}
