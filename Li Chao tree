@@ -22,7 +22,7 @@ struct line{
 };
 line tree[maxn<<2];
 void insert(ll idx,ll l,ll r,line y){
-	if(i<0 or i>maxn)return; // not necessary here i think , but safe to have 
+	if(idx<0 or idx>maxn)return; // not necessary here i think , but safe to have 
 	ll mid=l+r>>1;
 	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
   	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
