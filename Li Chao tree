@@ -20,7 +20,7 @@ using namespace std;
 // for max queries 
 const ll maxn=1e6+5;
 struct line{
-	ll m,c;
+	ll m=0,c=-1e18;
 	ll operator()(ll x){return m*x+c;}
 };
 line tree[maxn<<2];
@@ -35,8 +35,8 @@ void insert(ll idx,ll l,ll r,line y){
 ll query(ll idx,ll l, ll r, ll x){
 	if(l==r)return tree[idx](x);
 	ll mid=l+r>>1;
-	ll res=max(query(idx*2,l,mid,x),query(idx*2+1,mid+1,r,x));
-  	return max(res,tree[idx](x));
+	if(x<=mid)return max(tree[idx](x),query(idx*2,l,mid,x));
+	return max(tree[idx](x),query(idx*2+1,mid+1,r,x));
 }
 
 int main(){
