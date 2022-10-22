@@ -1,0 +1,62 @@
+//contains cht that works for cases where the slope of lines are increasing and queries are also in increasing order 
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<int,int>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n";
+
+// since a<=-1 and grad line is -2a*pre[i] and pre[i]>0 and val of pre[i] will be increasing
+// gradient are in increasing order 
+struct line{
+    ll m=0,c=-1e18;
+    ll operator()(ll x){return m*x+c;}
+};
+deque<line>dq;
+long double intersect(line a,line b){
+    return (long double)(a.c-b.c)/(b.m-a.m);
+}
+void insert(line y){
+    while(dq.size()>1){
+        ll s=dq.size();
+        if(intersect(dq[s-1],dq[s-2])>intersect(dq[s-1],y))dq.pop_back();
+		else break;
+    }
+    dq.pb(y);
+}
+ll query(ll x){
+    while(dq.size()>1){
+    	if(dq[0](x)<dq[1](x))dq.pop_front();
+      	else break;
+    }
+  	return dq[0](x);
+}
+ll pre[1000005];
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+    ll n;cin>>n;
+    ll a,b,c;cin>>a>>b>>c;
+    vector<ll>alist(n+1);
+    rep(i,1,n+1)cin>>alist[i];
+    pre[1]=alist[1];
+    rep(i,2,n+1)pre[i]=pre[i-1]+alist[i];
+  	ll dp=0;
+    rep(i,0,n+1){
+        if(i!=0)dp=query(pre[i])+a*pre[i]*pre[i]+b*pre[i]+c;
+        line y;y.m=-2ll*a*pre[i];y.c=a*pre[i]*pre[i]-b*pre[i]+dp;
+        insert(y);
+    }
+    cout<<dp;
+    return 0;
+}
