@@ -37,7 +37,7 @@ signed main(){
 	    pii v=s.top();
 	    s.pop();
 	    ll node=v.se,w=v.fi;
-	    if(w!=dist[node])continue;
+	    if(w>dist[node])continue; //stopping early optimisation 
 	    for(auto x:alist[node]){
             int ww=x.fi,xx=x.se;
             if(dist[node]+ww<dist[xx]){
