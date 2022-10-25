@@ -1,0 +1,52 @@
+#pragma GCC optimize ("O3,unroll-loops,no-stack-protector")
+#pragma GCC target ("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<ll,ll>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n"
+
+const ll inf=1e18;
+vector<pii>alist[1000005];
+ll dist[1000005];
+signed main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	int v,e;
+	cin>>v>>e;
+	rep(i,0,e){
+	    int a,b,c;cin>>a>>b>>c;
+	    alist[a].pb({c,b});
+	    alist[b].pb({c,a});
+	}
+	rep(i,2,v+1){
+	    dist[i]=inf;
+	}
+	pq<pii,vector<pii>,greater<pii>>s;
+	s.push({0,1});
+	while(!s.empty()){
+	    pii v=s.top();
+	    s.pop();
+	    ll node=v.se,w=v.fi;
+	    if(w!=dist[node])continue;
+	    for(auto x:alist[node]){
+            int ww=x.fi,xx=x.se;
+            if(dist[node]+ww<dist[xx]){
+                dist[xx]=dist[node]+ww;
+                s.push({dist[xx],xx});
+            }
+	    }
+	}
+	if(dist[v]==inf)cout<<-1;
+	else cout<<dist[v];
+  return 0;
+}
