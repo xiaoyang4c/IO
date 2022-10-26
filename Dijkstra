@@ -28,9 +28,7 @@ signed main(){
 	    alist[a].pb({c,b});
 	    alist[b].pb({c,a});
 	}
-	rep(i,2,v+1){
-	    dist[i]=inf;
-	}
+	rep(i,2,v+1)dist[i]=inf;
 	pq<pii,vector<pii>,greater<pii>>s;
 	s.push({0,1});
 	while(!s.empty()){
