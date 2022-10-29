@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<int,int>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n";
+const ll inf=1e18;
+const ll mod=1e9+7;
+ 
+ll dp[2][100005],price[1005],page[1005]; //price is weight and page is value in the traditional sense
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    ll n,k;cin>>n>>k;
+    rep(i,1,n+1)cin>>price[i];
+    rep(i,1,n+1)cin>>page[i];
+    rep(i,1,n+1){
+		rep(j,0,k+1){
+			dp[i%2][j]=dp[(i-1)%2][j];
+			if(j-price[i]>=0){
+				dp[i%2][j]=max(dp[i%2][j],dp[(i-1)%2][j-price[i]]+page[i]);
+			}
+		}
+	}
+	cout<<dp[n%2][k];
+    return 0;
+}
