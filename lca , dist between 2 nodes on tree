@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<int,int>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n";
+
+
+const ll maxn=200005;
+const ll lg=20;
+const ll mod=1e9+7;
+
+ll up[lg][maxn];
+ll depth[maxn];
+vector<ll>alist[maxn];
+ 
+void dfs(ll u,ll p){
+	up[0][u]=p;
+	rep(i,1,lg){
+		if(up[i-1][u]==-1)break;
+		up[i][u]=up[i-1][up[i-1][u]];
+	}
+	for(auto x:alist[u]){
+		if(x!=p){depth[x]=depth[u]+1;dfs(x,u);}
+	}
+}
+ll lca(ll a,ll b){
+	if(depth[a]<depth[b])swap(a,b); // let a be the deeper one
+	ll k=depth[a]-depth[b];
+	rep(i,0,lg){
+		if((k>>i)&1)a=up[i][a];
+	}
+	if(a==b)return a;
+	for(ll i=19;i>=0;i--){
+		if(up[i][a]!=up[i][b]){
+			a=up[i][a];
+			b=up[i][b];
+		}
+	}
+	return up[0][a];
+}
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    ll n,q;
+    cin>>n;
+	rep(i,0,n-1){
+		ll a,b;cin>>a>>b;
+		alist[a].pb(b);
+		alist[b].pb(a);
+	}
+	memset(up,-1,sizeof up);
+	up[0][1]=-1;depth[1]=0;
+	dfs(1,-1);
+	cin>>q;
+	while(q--){
+		ll a,b;cin>>a>>b;
+		cout<<depth[a]+depth[b]-2*depth[lca(a,b)]<<endl;
+	}
+    return 0;
+}
