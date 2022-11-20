@@ -1,0 +1,10 @@
+int find_parent(int n){
+    if (p[n] == n) return n;
+    else return (p[n] = find_parent(p[n]));
+}
+bool is_same_set(int a, int b){
+    return find_parent(a) == find_parent(b);
+}
+void merge_set(int a, int b){
+    p[find_parent(a)] = find_parent(b);
+}
