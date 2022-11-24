@@ -1,10 +1,45 @@
-int find_parent(int n){
-    if (p[n] == n) return n;
-    else return (p[n] = find_parent(p[n]));
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<ll,ll>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n"
+const ll inf=1e18;
+const ll mod=1e9+7;
+
+const ll maxn=1e5+5;
+ll p[maxn],sz[maxn];
+void makeset(ll u){
+	p[u]=u;
+	sz[u]=1;
 }
-bool is_same_set(int a, int b){
-    return find_parent(a) == find_parent(b);
+ll findset(ll u){
+	if(p[u]==u)return u;
+	return p[u]=findset(p[u]);
 }
-void merge_set(int a, int b){
-    p[find_parent(a)] = find_parent(b);
+bool sameset(ll u,ll v){
+	return findset(u)==findset(v);
+}
+void mergeset(ll a,ll b){
+	a=findset(a);
+	b=findset(b);
+	if(a!=b){
+		if(sz[a]<sz[b])swap(a,b);
+		p[b]=a;
+		sz[a]+=sz[b];
+	}
+}
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	
+	return 0;
 }
