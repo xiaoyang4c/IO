@@ -1,6 +1,13 @@
 #include<bits/stdc++.h>
 using namespace std;
 #define int long long
+ll expo(ll a,ll b, ll m){
+	if(b==1)return a;
+	else{
+		if(b%2==0)return (expo(a,b/2,m)%m*expo(a,b/2,m)%m)%m;
+		else return ((expo(a,b/2,m)%m*expo(a,b/2,m)%m)%m*a%m)%m;
+	}
+}
 signed main(){
     int t;cin>>t;
     while(t--){
