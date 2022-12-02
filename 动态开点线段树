@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<ll,ll>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n"
+const ll inf=1e18;
+const ll mod=1e9+7;
+
+const ll maxn=5e6+5;
+ll tree[maxn];
+ll lc[maxn],rc[maxn];
+ll tot=1;
+inline void pushup(ll c){
+	tree[c]=min(tree[lc[c]],tree[rc[c]]);
+}
+
+void update(ll &c,ll cl,ll cr,ll pos,ll val){
+	if(c==-1)c=++tot;
+	if(cl==cr){
+		tree[c]=val;
+		return;
+	}
+	ll mid=cl+cr>>1;
+	if(pos<=mid)update(lc[c],cl,mid,pos,val);
+	else update(rc[c],mid+1,cr,pos,val);
+	pushup(c);
+}
+
+ll query(ll c,ll cl,ll cr,ll l,ll r){
+	if(c==-1)return 0; 
+	if(l<=cl and cr<=r)return tree[c];	
+	ll mid=cl+cr>>1;
+	ll ret=inf;
+	if(l<=mid)ret=min(ret,query(lc[c],cl,mid,l,r));
+	if(mid<r)ret=min(ret,query(rc[c],mid+1,cr,l,r));
+	return ret;
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	memset(lc,-1,sizeof lc);
+	memset(rc,-1,sizeof rc);
+	ll n,q;cin>>n>>q;
+	ll rt=1;
+	while(q--){
+		ll op,x,y;
+		cin>>op>>x>>y;
+		if(op==1){
+			update(rt,0,n-1,x,y);
+		}else{
+			cout<<query(1,0,n-1,x,y)<<endl;
+		}
+	}
+	return 0;
+}
