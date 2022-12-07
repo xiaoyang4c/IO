@@ -1,0 +1,95 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pii pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define inf 0x3f3f3f3f
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) ((long long)(x.size()))
+#define ll long long
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+ll lowbit(ll x) {return x&(-x);}
+ll expo(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=10000005;
+ll tree[maxn],add[maxn],a[maxn];
+ll n,q;
+
+void fill(ll c,ll cl, ll cr , ll val){
+    tree[c]+=1ll*(cr-cl+1)*val;
+    add[c]+=val;
+}
+void pushdown(ll c,ll cl,ll cr){
+    ll mid=cl+cr>>1;
+    fill(c*2,cl,mid,add[c]);
+    fill(c*2+1,mid+1,cr,add[c]);
+    add[c]=0;
+}
+void pushup(ll x){
+    tree[x]=tree[x*2]+tree[x*2+1];
+}
+void build(ll idx,ll l,ll r){
+    if(l==r){
+        tree[idx]=a[l];
+        return;
+    }
+    ll mid=l+r>>1;
+    build(idx*2,l,mid);
+    build(idx*2+1,mid+1,r);
+    pushup(idx);
+}
+void update(ll c, ll cl, ll cr, ll l, ll r, ll val){
+    if(l<=cl and cr<=r){
+        fill(c,cl,cr,val);
+        return;
+    }
+    pushdown(c,cl,cr);
+    ll mid=cl+cr>>1;
+    if(l<=mid)update(c*2,cl,mid,l,r,val);
+    if(r>mid)update(c*2+1,mid+1,cr,l,r,val);
+    pushup(c);
+    return;
+}
+ll query(ll c, ll cl, ll cr, ll l, ll r){
+    if(l<=cl and cr<=r){
+        return tree[c];
+    }
+    ll ans=0;
+    ll mid=cl+cr>>1;
+    pushdown(c,cl,cr);
+    if(l<=mid)ans+=query(c*2,cl,mid,l,r);
+    if(r>mid)ans+=query(c*2+1,mid+1,cr,l,r);
+    return ans;
+}
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin>>n;
+	rep(i,1,n+1)cin>>a[i];
+	build(1,1,n);
+	cin>>q;
+	while(q--){
+	    ll op;cin>>op;
+	    if(op==1){
+	        ll x,y,z;cin>>x>>y>>z;
+	        x++;y++;
+	        update(1,1,n,x,y,z);
+	    }else{
+	        ll x,y;cin>>x>>y;
+	        x++;y++;
+	        cout<<query(1,1,n,x,y)<<endl;
+	    }
+	}
+	return 0;
+}
+
+/*
+
+*/
