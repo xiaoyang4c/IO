@@ -8,6 +8,7 @@ ll expo(ll a,ll b, ll m){
 		else return ((expo(a,b/2,m)%m*expo(a,b/2,m)%m)%m*a%m)%m;
 	}
 }
+//division with mod p -> a/b (mod p) = (a%mod*expo(b,mod-2,mod))%mod
 signed main(){
     int t;cin>>t;
     while(t--){
