@@ -16,9 +16,9 @@ signed main(){
         cin>>a>>b>>m;
         int res=1;
         while(b>0){
-            if(b%2==1)res=(res%m*a%m)%m;
+            if(b&1)res=(res%m*a%m)%m;
             a=(a%m*a%m)%m;
-            b/=2;
+            b>>=1;
         }
         cout<<res<<'\n';
     }
