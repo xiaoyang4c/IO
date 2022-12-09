@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pii pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define inf 0x3f3f3f3f
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (ll(x.size()))
+#define ll long long
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+ll lowbit(ll x) {return x&(-x);}
+ll expo(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=5e6+5;
+ll lc[maxn],rc[maxn],tree[maxn],add[maxn];
+ll tot=1,rt=1;
+void fill(ll c,ll cl,ll cr,ll val){
+	tree[c]+=val*(cr-cl+1);
+	add[c]+=val;
+}
+void pushdown(ll c,ll cl, ll cr){
+	if(lc[c]==-1)lc[c]=++tot;
+	if(rc[c]==-1)rc[c]=++tot;
+	ll mid=cl+cr>>1;
+	fill(lc[c],cl,mid,add[c]);
+	fill(rc[c],mid+1,cr,add[c]);
+	add[c]=0;
+}
+void update(ll &c,ll cl, ll cr, ll l, ll r, ll val){
+	if(c==-1)c=++tot;
+	if(l<=cl and cr<=r){
+		fill(c,cl,cr,val);
+		return;
+	}
+	if(add[c]!=0)pushdown(c,cl,cr);
+	ll mid=cl+cr>>1;
+	if(l<=mid)update(lc[c],cl,mid,l,r,val);
+	if(r>mid)update(rc[c],mid+1,cr,l,r,val);
+	if(lc[c]==-1)tree[c]=tree[rc[c]];
+	else if(rc[c]==-1)tree[c]=tree[lc[c]];
+	else tree[c]=tree[lc[c]]+tree[rc[c]];
+	return;
+}
+ll query(ll c,ll cl, ll cr, ll l, ll r){
+	if(c==-1)return 0;
+	if(l<=cl and cr<=r)return tree[c];
+	if(add[c]!=0)pushdown(c,cl,cr);
+	ll mid=cl+cr>>1;
+	ll ans=0;
+	if(l<=mid)ans+=query(lc[c],cl,mid,l,r);
+	if(r>mid)ans+=query(rc[c],mid+1,cr,l,r);
+	return ans;
+}
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	memset(lc,-1,sizeof lc);
+	memset(rc,-1,sizeof rc);
+	ll n,q;cin>>n>>q;
+	while(q--){
+		ll op;cin>>op;
+		if(op==1){
+			ll l,r,k;cin>>l>>r>>k;
+			update(rt,1,n,l,r,k);
+		}else{
+			ll l,r;cin>>l>>r;
+			cout<<query(1,1,n,l,r)<<endl;
+		}
+	}
+	return 0;
+}
