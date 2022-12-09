@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define fi first
+#define se second
+#define SZ(x) ((long long)(x).size())
+#define rep(i,a,b) for (long long i=(a);i<(b);i++)
+#define pq priority_queue
+#define MP make_pair
+#define pb push_back
+#define ALL(x) (x).begin(),(x).end()
+#define ll long long
+#define pii pair<ll,ll>
+#define debug(x) cerr<<#x<<"="<<x<<"\n"
+#define endl "\n";
+
+vector<pii>alist[1000005];
+ll dist[1000005],inque[1000005];
+ll inf=1e18;
+signed main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll v,e;cin>>v>>e;
+	rep(i,0,e){
+	    int a,b,c;cin>>a>>b>>c;
+	    alist[a].pb({b,c});
+	    alist[b].pb({a,c});
+	}
+    deque<pii>q;
+    rep(i,0,v+1)dist[i]=inf;
+    q.pb({1,0});
+    dist[1]=0;
+    inque[1]++;
+    while(!q.empty()){
+        pii v=q.front();
+        q.pop_front();inque[v.fi]--;
+        for(auto x:alist[v.fi]){
+            if(dist[v.fi]+x.se<dist[x.fi]){
+	            dist[x.fi]=dist[v.fi]+x.se;
+	            if(inque[x.fi]==0){
+	                inque[x.fi]++;
+	                if(dist[x.fi]>dist[q.front().fi])q.pb(x);
+	                else q.push_front(x);
+	            }
+	        }
+        }
+    }
+    if(dist[v]==inf)cout<<-1;
+	else cout<<dist[v];
+    return 0;
+}
