@@ -1,0 +1,18 @@
+const ll maxn=1e6+5;
+ll tree[maxn];
+ll lowbit(ll x) {return x&(-x);}
+void update(ll x,ll val){
+	while(x<maxn){
+		tree[x]+=val;
+		x+=lowbit(x);
+	}
+	return;
+}
+ll query(ll x){
+	ll ret=0;
+	while(x>0){
+		ret+=tree[x];
+		x-=lowbit(x);
+	}
+	return ret;
+}
