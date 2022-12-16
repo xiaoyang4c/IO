@@ -35,11 +35,11 @@ signed main(){
 	    ll node=v.se,d=v.fi;
 	    if(d!=dist[node])continue; //stopping early optimisation 
 	    for(auto x:alist[node]){
-            ll ww=x.fi,xx=x.se;
-            if(dist[node]+ww<dist[xx]){
-                dist[xx]=dist[node]+ww;
-                s.push({dist[xx],xx});
-            }
+            	ll ww=x.fi,xx=x.se;
+            	if(dist[node]+ww<dist[xx]){
+                	dist[xx]=dist[node]+ww;
+                	s.push({dist[xx],xx});
+            	}
 	    }
 	}
 	if(dist[v]==inf)cout<<-1;
