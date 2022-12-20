@@ -7,9 +7,9 @@ using namespace std;
 #define pb push_back
 #define debug(x) cerr<<#x<<"="<<x<<endl
 #define inf 0x3f3f3f3f
-#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define rep(i,a,b) for (long long i=a;i<(b);i++)
 #define MP make_pair
-#define SZ(x) (ll(x.size()))
+#define SZ(x) (int(x.size()))
 #define ll long long
 #define mod 1000000007
 #define ALL(x) x.begin(),x.end()
@@ -19,36 +19,40 @@ void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
 ll lowbit(ll x) {return x&(-x);}
 ll expo(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
 
-const ll maxn=2e5+5;
+const ll maxn=3e5+5;
+ll f[maxn][2]; // 0 for shortest path, 1 for second shortest path 
 vector<ll>alist[maxn];
-ll n,dia=0,d1[maxn],d2[maxn];
+ll d=0;
 void dfs(ll u,ll p){
-	d1[u]=d2[u]=0;
+	f[u][0]=f[u][1]=0;
 	for(auto x:alist[u]){
 		if(x==p)continue;
 		dfs(x,u);
-		ll t=d1[x]+1;
-		if(t>d1[u]){
-			d2[u]=d1[u];
-			d1[u]=t;
+		ll tmp=f[x][0]+1;
+		if(tmp>f[u][0]){
+			f[u][1]=f[u][0];
+			f[u][0]=tmp;	
 		}
-		else if(t>d2[u]){
-			d2[u]=t;
+		else if(tmp>f[u][1]){
+			f[u][1]=tmp;
 		}
 	}
-	dia=max(dia,d1[u]+d2[u]);
+	d=max(d,f[u][0]+f[u][1]);
 }
 int main(){
     ios::sync_with_stdio(0);
 	cin.tie(0);
-	cin>>n;
-	rep(i,0,n-1){
-		ll a,b;cin>>a>>b;
-		alist[a].pb(b);
-		alist[b].pb(a);
-	}
+	ll n;cin>>n;
+	rep(i,1,n){
+		ll u,v;cin>>u>>v;
+		alist[u].pb(v);
+		alist[v].pb(u);
+	}	
 	dfs(1,-1);
-	cout<<dia;
+	cout<<d;
 	return 0;
 }
+/**/
+
+
 
