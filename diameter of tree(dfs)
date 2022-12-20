@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+#define fi first
+#define se second
+#define pii pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define inf 0x3f3f3f3f
+#define rep(i,a,b) for (long long i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define ll long long
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+ll lowbit(ll x) {return x&(-x);}
+ll expo(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+ 
+const ll maxn=3e5+5;
+vector<ll>alist[maxn];
+ll d=0,deepest=-1,depth[maxn];
+void dfs(ll u, ll p){
+	for(auto x:alist[u]){
+		if(x==p)continue;
+		depth[x]=depth[u]+1;
+		if(deepest==-1 or depth[x]>depth[deepest]){
+			deepest=x;
+		}
+		dfs(x,u);
+	}
+}
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n;cin>>n;
+	rep(i,1,n){
+		ll u,v;cin>>u>>v;
+		alist[u].pb(v);
+		alist[v].pb(u);
+	}	
+	dfs(1,-1);
+	depth[deepest]=0;
+	dfs(deepest,-1);
+	cout<<depth[deepest];
+	return 0;
+}
+/**/
