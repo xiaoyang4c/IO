@@ -78,4 +78,28 @@ ll query(ll idx,ll l, ll r, ll x){
 	return min(tree[idx](x),query(idx*2+1,mid+1,r,x));
 }
 
+//动态开点
+const ll maxn=1e6+5;
+struct line{
+	ll m=0,c=-1e18;
+	ll operator()(ll x){return m*x+c;}
+};
+line tree[maxn];
+ll lc[maxn],rc[maxn],tot=1;
+void insert(ll &idx,ll l,ll r,line y){
+	if(idx==-1)idx=++tot;
+	if(l==r)return;
+	ll mid=l+r>>1;
+	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
+  	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
+  	if(y(l)>tree[idx](l))insert(lc[idx],l,mid,y);
+  	else insert(rc[idx],mid+1,r,y);
+}
+ll query(ll idx,ll l, ll r, ll x){
+	if(idx==-1)return -inf;
+	if(l==r)return tree[idx](x);
+	ll mid=l+r>>1;
+	if(x<=mid)return max(tree[idx](x),query(lc[idx],l,mid,x));
+	return max(tree[idx](x),query(rc[idx],mid+1,r,x));
+}
 
