@@ -1,0 +1,10 @@
+vector<ll> discretize(vector<ll> V){
+    vector<ll> dis = V;
+    vector<ll> v(V.size());
+    sort(dis.begin(), dis.end());
+    dis.resize(unique(dis.begin(), dis.end()) - dis.begin());
+    for (ll i = 0; i < V.size(); i++){
+        v[i] = lower_bound(dis.begin(), dis.end(), V[i]) - dis.begin() + 1;
+    }
+    return v;
+}
