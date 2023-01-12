@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf (1ll<<60)
+#define rep(i,a,b) for (int i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (	int(x.size()))
+#define ll long long
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(int &a,int b) {a=(a+b)%mod;}
+void dec(int &a,int b) {a=(a-b+mod)%mod;}
+int lowbit(int x) {return x&(-x);}
+ll expo(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=2e5+5;
+vector<ll>alist[maxn];
+ll sz[maxn],wt[maxn];
+ll n,centriod;
+//重心的性质：
+//all subtree size from root are <=n/2
+//can have up to 2 centriod 
+//sum of distances to every node from centriod is the lowest 
+//if 2 trees are joined together, the new centriod is on the simple path from one centriod to the other from another tree
+//removing or adding an leaf node will let centriod move by at most one unit
+void dfs(ll u,ll p){
+	sz[u]=1;
+	for(auto x:alist[u]){
+		if(x==p)continue;
+		dfs(x,u);
+		sz[u]+=sz[x];
+		wt[u]=max(wt[u],sz[x]);
+	}
+	wt[u]=max(wt[u],n-sz[u]);
+	if(wt[u]<=n/2)centriod=u;
+}	
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin>>n;
+	rep(i,0,n-1){
+		ll a,b;cin>>a>>b;
+		alist[a].pb(b);
+		alist[b].pb(a);
+	}
+	dfs(1,-1);//get centriod
+	cout<<centriod;
+	return 0;
+}
+
