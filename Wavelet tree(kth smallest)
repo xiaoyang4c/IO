@@ -104,3 +104,66 @@ int main(){
 	return 0;
 }
 /**/
+// or funni code that is slower 
+const ll maxn=1e5+5;
+vector<ll>tree[maxn<<2];
+ll a[maxn];
+vector<ll>combine(vector<ll>a,vector<ll>b){
+    ll p=0,pp=0;
+    vector<ll>ret;
+    while(p<SZ(a) and pp<SZ(b)){
+        if(a[p]<b[pp]){
+            ret.pb(a[p]);p++;
+        }else{
+            ret.pb(b[pp]);pp++;
+        }
+    }
+    if(pp==SZ(b)){
+        rep(i,p,SZ(a))ret.pb(a[i]);
+    }else{
+        rep(i,pp,SZ(b))ret.pb(b[i]);
+    }
+    return ret;
+}
+void build(ll c,ll cl,ll cr){
+	if(cl==cr){
+		tree[c].pb(a[cl]);
+		return;
+	}
+	ll mid=cl+cr>>1;
+	build(c<<1,cl,mid);
+	build(c<<1|1,mid+1,cr);
+	tree[c]=combine(tree[c<<1],tree[c<<1|1]);
+}
+ll query(ll c,ll cl,ll cr,ll l,ll r,ll k){
+	if(r<cl or l>cr)return 0;
+	if(l<=cl and cr<=r){
+		return lower_bound(ALL(tree[c]),k)-tree[c].begin();
+	}
+	ll mid=cl+cr>>1;
+	ll ret=0;
+	if(l<=mid)ret+=query(c<<1,cl,mid,l,r,k);
+	if(r>mid)ret+=query(c<<1|1,mid+1,cr,l,r,k);
+	return ret;
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n,p;cin>>n>>p;
+	rep(i,0,n)cin>>a[i];
+	build(1,0,n-1);	
+	while(p--){
+		ll l,r,k;cin>>l>>r>>k;
+		l--;r--;
+		//k=r-l+1-k;// change largest to smallest
+		ll lo=0,hi=1e9+1;// guess an element
+		while(lo<hi){
+			ll mid=lo+hi+1>>1;
+			//check the position of the element in the range
+			if(query(1,0,n-1,l,r,mid)<=k)lo=mid;
+			else hi=mid-1;
+		}
+		cout<<lo<<endl;
+	}
+	return 0;
+}
