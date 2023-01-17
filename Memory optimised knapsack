@@ -33,3 +33,19 @@ int main(){
 	cout<<dp[n%2][k];
     return 0;
 }
+//more magic way
+const ll maxn=111111;
+ll f[maxn],wt[maxn],val[maxn];
+int main(){
+    ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n,w;cin>>n>>w;
+	rep(i,1,n+1)cin>>wt[i]>>val[i];
+	rep(i,1,n+1){
+		for(ll j=w;j>=wt[i];j--){
+			f[j]=max(f[j],f[j-wt[i]]+val[i]);
+		}
+	}
+	cout<<f[w];
+	return 0;
+}
