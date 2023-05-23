@@ -26,7 +26,7 @@ vector<ll>edge[maxn];
 ll f[maxn],dep[maxn],sz[maxn],son[maxn],id[maxn],tp[maxn];
 
 ll n,q;
-ll tot=0;
+ll tot=1;
 ll tree[maxn<<2],add[maxn<<2];
 
 void dfs1(ll u,ll fa){
