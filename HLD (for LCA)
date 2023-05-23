@@ -33,12 +33,10 @@ void dfs2(ll u,ll t){
 
 ll lca(ll u,ll v){
 	while(tp[u]!=tp[v]){
-		if(dep[tp[u]]>dep[tp[v]]){
-			u=f[tp[u]];
-		}else{
-			v=f[tp[v]];
-		}
+		if(dep[tp[u]]<dep[tp[v]])swap(u,v);
+		u=f[tp[u]];
 	}
+	//same chain now
 	if(dep[u]<dep[v])return u;
 	else return v;
 }
