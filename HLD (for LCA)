@@ -13,7 +13,7 @@ void dfs1(ll u,ll fa){
 		if(v==fa)continue;
 		dfs1(v,u);
 		sz[u]+=sz[v];
-		if(sz[v]>sz[u])son[u]=v;
+		if(sz[v]>sz[son[u]])son[u]=v;
 	}
 	return;
 }
