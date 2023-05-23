@@ -1,0 +1,61 @@
+const ll maxn=500005;
+vector<ll>edge[maxn];
+ll f[maxn],dep[maxn],sz[maxn],son[maxn],id[maxn],tp[maxn];
+ll n,m,s;
+ll tot=0;
+
+void dfs1(ll u,ll fa){
+	dep[u]=dep[fa]+1;
+	sz[u]=1;
+	f[u]=fa;
+	son[u]=0;
+	for(auto v:edge[u]){
+		if(v==fa)continue;
+		dfs1(v,u);
+		sz[u]+=sz[v];
+		if(sz[v]>sz[u])son[u]=v;
+	}
+	return;
+}
+
+void dfs2(ll u,ll t){
+	tp[u]=t;
+	id[u]=tot++;
+	if(son[u]!=0){
+		dfs2(son[u],t);
+	}
+	for(auto v:edge[u]){
+		if(v==f[u] or v==son[u])continue;
+		dfs2(v,v);
+	}
+	return;
+}
+
+ll lca(ll u,ll v){
+	while(tp[u]!=tp[v]){
+		if(dep[tp[u]]>dep[tp[v]]){
+			u=f[tp[u]];
+		}else{
+			v=f[tp[v]];
+		}
+	}
+	if(dep[u]<dep[v])return u;
+	else return v;
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin>>n>>m>>s;//number of vertices , number of queries , root
+	rep(i,0,n-1){
+		ll a,b;cin>>a>>b;
+		edge[a].pb(b);
+		edge[b].pb(a);
+	}
+	dfs1(s,-1);
+	dfs2(s,s);
+	while(m--){
+		ll u,v;cin>>u>>v;
+		cout<<lca(u,v)<<endl;
+	}
+	return 0;
+}
