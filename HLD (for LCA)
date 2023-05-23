@@ -20,7 +20,7 @@ void dfs1(ll u,ll fa){
 
 void dfs2(ll u,ll t){
 	tp[u]=t;
-	id[u]=tot++;
+	id[u]=++tot; //id[u]=tot++; if its for segment tree that is 0 indexed
 	if(son[u]!=0){
 		dfs2(son[u],t);
 	}
