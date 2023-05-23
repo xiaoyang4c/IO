@@ -1,0 +1,134 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf 1ll<<60
+#define rep(i,a,b) for (int i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define ll long long
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+int lowbit(ll x) {return x&(-x);}
+ll p0w(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=500005;
+vector<ll>edge[maxn];
+ll f[maxn],dep[maxn],sz[maxn],son[maxn],id[maxn],tp[maxn];
+
+ll n,q;
+ll tot=0;
+ll tree[maxn<<2],add[maxn<<2];
+
+void dfs1(ll u,ll fa){
+	dep[u]=dep[fa]+1;
+	sz[u]=1;
+	f[u]=fa;
+	son[u]=0;
+	for(auto v:edge[u]){
+		if(v==fa)continue;
+		dfs1(v,u);
+		sz[u]+=sz[v];
+		if(sz[v]>sz[son[u]])son[u]=v;
+	}
+	return;
+}
+
+void dfs2(ll u,ll t){
+	tp[u]=t;
+	id[u]=tot++;
+	if(son[u]!=0){
+		dfs2(son[u],t);
+	}
+	for(auto v:edge[u]){
+		if(v==f[u] or v==son[u])continue;
+		dfs2(v,v);
+	}
+	return;
+}
+
+
+void fill(ll c,ll cl, ll cr , ll val){
+    tree[c]+=(cr-cl+1)*val;
+    add[c]+=val;
+}
+void pushdown(ll c,ll cl,ll cr){
+    ll mid=cl+cr>>1;
+    fill(c*2,cl,mid,add[c]);
+    fill(c*2+1,mid+1,cr,add[c]);
+    add[c]=0;
+}
+void pushup(ll x){
+    tree[x]=tree[x*2]+tree[x*2+1];
+}
+void update(ll c, ll cl, ll cr, ll l, ll r, ll val){
+    if(l<=cl and cr<=r){
+        fill(c,cl,cr,val);
+        return;
+    }
+    pushdown(c,cl,cr);
+    ll mid=cl+cr>>1;
+    if(l<=mid)update(c*2,cl,mid,l,r,val);
+    if(r>mid)update(c*2+1,mid+1,cr,l,r,val);
+    pushup(c);
+    return;
+}
+ll query(ll c, ll cl, ll cr, ll l, ll r){
+    if(l<=cl and cr<=r){
+        return tree[c];
+    }
+    ll ans=0;
+    ll mid=cl+cr>>1;
+    pushdown(c,cl,cr);
+    if(l<=mid)ans+=query(c*2,cl,mid,l,r);
+    if(r>mid)ans+=query(c*2+1,mid+1,cr,l,r);
+    return ans;
+}
+
+
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin>>n>>q;
+	rep(i,0,n-1){
+		ll a,b;cin>>a>>b;
+		edge[a].pb(b);
+		edge[b].pb(a);
+	}
+	dfs1(1,-1);
+	dfs2(1,1);
+	
+	while(q--){
+		char c;cin>>c;
+		ll u,v;cin>>u>>v;
+		if(c=='P'){
+			while(tp[u]!=tp[v]){
+				if(dep[tp[u]]<dep[tp[v]])swap(u,v);
+				update(1,1,n,id[tp[u]],id[u],1);
+				u=f[tp[u]];
+			}
+			if(id[u]>id[v])swap(u,v); //same chain
+			if(u!=v)update(1,1,n,id[u]+1,id[v],1); //upd from u to v
+		}else{
+			ll sum=0;
+			while(tp[u]!=tp[v]){
+				if(dep[tp[u]]<dep[tp[v]])swap(u,v);
+				sum+=query(1,1,n,id[tp[u]],id[u]);
+				u=f[tp[u]];
+			}
+			if(id[u]>id[v])swap(u,v); //same chain
+			if(u!=v)sum+=query(1,1,n,id[u]+1,id[v]); //qry from u to v
+			cout<<sum<<endl;
+		}
+	}
+	return 0;
+}
