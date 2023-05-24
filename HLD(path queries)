@@ -127,6 +127,8 @@ int main(){
 			}
 			if(id[u]>id[v])swap(u,v); //same chain
 			if(u!=v)sum+=query(1,1,n,id[u]+1,id[v]); //qry from u to v
+			//if its on edges and not paths, do:
+			//sum+=query(1,1,n,id[u],id[v]);
 			cout<<sum<<endl;
 		}
 	}
