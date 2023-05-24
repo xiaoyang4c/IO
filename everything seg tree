@@ -1,0 +1,60 @@
+struct node{
+    int s, e, m, val, lazyadd, lazyset;
+    node *l, *r;
+    node(int s, int e): s(s), e(e), m((s+e)/2), val(0), lazyadd(0), lazyset(-1){
+        if (s != e){
+            l = new node(s, m);
+            r = new node(m+1, e);
+        }
+    }
+    void prop(){
+        if (lazyset != -1){
+            val = lazyset;
+            if (s != e){
+                l->lazyset = lazyset;
+                l->lazyadd = 0;
+                r->lazyset = lazyset;
+                r->lazyadd = 0;
+            }
+            lazyset = -1;
+        }
+        if (lazyadd != 0){
+            val += lazyadd;
+            if (s != e){
+                l->lazyadd += lazyadd;
+                r->lazyadd += lazyadd;
+            }
+            lazyadd = 0;
+        }
+    }
+    void range_set(int x, int y, int v){
+        prop();
+        if (s==x && e==y){
+            lazyset = v;
+            return;
+        }
+        if (y <= m) l->range_set(x, y, v);
+        else if (x > m) r->range_set(x, y, v);
+        else l->range_set(x, m, v), r->range_set(m+1, y, v);
+    }
+    void range_add(int x, int y, int v){
+        prop();
+        if (s==x && e==y){
+            lazyadd += v;
+            return;
+        }
+        if (y <= m) l->range_add(x, y, v);
+        else if (x > m) r->range_add(x, y, v);
+        else l->range_add(x, m, v), r->range_add(m+1, y, v);
+    }
+    void upd(int x, int y, int v, bool isset){
+        if (isset) range_set(x, y, v);
+        else range_add(x, y, v);
+    }
+    int qry(int x){
+        prop();
+        if (s==e) return val;
+        if (x <= m) return l->qry(x);
+        else return r->qry(x);
+    }
+} *root;
