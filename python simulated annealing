@@ -57,9 +57,9 @@ def main():
       sizes.append(w)
       valus.append(v)
   rnd = np.random.RandomState(5)  # 3 .98 = 117,100
-  max_iter = 100000
-  start_temperature = 100000.0
-  alpha = 0.99
+  max_iter = 1000000
+  start_temperature = 1000000.0
+  alpha = 0.9999
   packing = solve(n, rnd, valus, sizes, 
     max_size, max_iter, start_temperature, alpha)
   (v,s) = total_valu_size(packing, valus, sizes, max_size)
@@ -67,6 +67,7 @@ def main():
 
 if __name__ == "__main__":
   main()
+
 
 
 
