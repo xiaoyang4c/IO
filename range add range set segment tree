@@ -1,0 +1,128 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf 1ll<<60
+#define rep(i,a,b) for (int i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+int lowbit(ll x) {return x&(-x);}
+ll p0w(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=1e6+6;
+ll n,q,a[maxn];
+struct node{
+	ll mx,set,add;
+}tree[maxn<<2];
+
+void pushup(ll c){
+	tree[c].mx=max(tree[c<<1].mx,tree[c<<1|1].mx);
+}
+void prop_set(ll c){
+	if(tree[c].set!=-inf){
+		tree[c<<1].add=tree[c<<1|1].add=0;
+		tree[c<<1].mx=tree[c<<1|1].mx=tree[c].set;
+		tree[c<<1].set=tree[c<<1|1].set=tree[c].set;
+		tree[c].set=-inf;
+	}
+}
+void prop_add(ll c){
+	if(tree[c].add!=0){
+		prop_set(c);
+		tree[c<<1].mx+=tree[c].add;
+		tree[c<<1|1].mx+=tree[c].add;
+		tree[c<<1].add+=tree[c].add;
+		tree[c<<1|1].add+=tree[c].add;
+		tree[c].add=0;
+	}
+}
+void pushdown(ll c){
+	prop_set(c);
+	prop_add(c);
+}
+void build(ll c, ll cl, ll cr){
+	if(cl == cr){
+		tree[c].mx = a[cl];
+		tree[c].set = -inf;
+		tree[c].add = 0;
+		return;
+	}
+	ll mid = cl+cr>>1;
+	build(c<<1,cl,mid);
+	build(c<<1|1,mid+1,cr);
+	pushup(c);
+}
+void range_set(ll c, ll cl, ll cr, ll l, ll r, ll x){
+	if(l<=cl and cr<=r){
+		tree[c].add=0;
+		tree[c].mx=x;
+		tree[c].set=x;
+		return;
+	}
+	pushdown(c);
+	ll mid=cl+cr>>1;
+	if(l<=mid)range_set(c<<1,cl,mid,l,r,x);
+	if(r>mid)range_set(c<<1|1,mid+1,cr,l,r,x);
+	pushup(c);
+}
+
+void range_add(ll c, ll cl, ll cr, ll l, ll r, ll x){
+	if(l<=cl and cr<=r){
+		tree[c].mx+=x;
+		tree[c].add+=x;
+		return;
+	}
+	pushdown(c);
+	ll mid=cl+cr>>1;
+	if(l<=mid)range_add(c<<1,cl,mid,l,r,x);
+	if(r>mid)range_add(c<<1|1,mid+1,cr,l,r,x);
+	pushup(c);
+}
+ll query(ll c, ll cl, ll cr, ll l, ll r){
+	if(l<=cl and cr<=r){
+		return tree[c].mx;
+	}
+	pushdown(c);
+	ll mid=cl+cr>>1;
+	ll res=-inf;
+	if(l<=mid)res=max(res,query(c<<1,cl,mid,l,r));
+	if(r>mid)res=max(res,query(c<<1|1,mid+1,cr,l,r));
+	return res;
+	
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin>>n>>q;
+	rep(i,1,n+1)cin>>a[i];
+	rep(i,0,4*n+1)tree[i].set=-inf;
+	build(1,1,n);
+	while(q--){
+		ll op;cin>>op;
+		if(op==1){
+			ll l,r,x;cin>>l>>r>>x;
+			range_set(1,1,n,l,r,x);
+		}
+		else if(op==2){
+			ll l,r,x;cin>>l>>r>>x;
+			range_add(1,1,n,l,r,x);
+		}else{
+			ll l,r;cin>>l>>r;
+			cout<<query(1,1,n,l,r)<<endl;
+		}
+	}
+	return 0;
+}
