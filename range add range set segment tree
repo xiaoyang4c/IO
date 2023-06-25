@@ -26,38 +26,36 @@ const ll maxn=1e6+6;
 ll n,q,a[maxn];
 struct node{
 	ll mx,set,add;
+	bool use;
 }tree[maxn<<2];
 
 void pushup(ll c){
 	tree[c].mx=max(tree[c<<1].mx,tree[c<<1|1].mx);
 }
-void prop_set(ll c){
-	if(tree[c].set!=-inf){
-		tree[c<<1].add=tree[c<<1|1].add=0;
-		tree[c<<1].mx=tree[c<<1|1].mx=tree[c].set;
-		tree[c<<1].set=tree[c<<1|1].set=tree[c].set;
-		tree[c].set=-inf;
-	}
-}
-void prop_add(ll c){
-	if(tree[c].add!=0){
-		prop_set(c);
-		tree[c<<1].mx+=tree[c].add;
-		tree[c<<1|1].mx+=tree[c].add;
+
+void pushdown(ll c){
+	if(tree[c].use){
+		tree[c<<1].set=tree[c].set;
+		tree[c<<1|1].set=tree[c].set;
+		tree[c<<1].add=tree[c].add;
+		tree[c<<1|1].add=tree[c].add;
+		tree[c<<1].mx=tree[c].set+tree[c].add;
+		tree[c<<1|1].mx=tree[c].set+tree[c].add;
+		tree[c<<1].use=tree[c<<1|1].use=1;
+	}else{
 		tree[c<<1].add+=tree[c].add;
 		tree[c<<1|1].add+=tree[c].add;
-		tree[c].add=0;
+		tree[c<<1].mx+=tree[c].add;
+		tree[c<<1|1].mx+=tree[c].add;
 	}
-}
-void pushdown(ll c){
-	prop_set(c);
-	prop_add(c);
+	tree[c].set=tree[c].add=tree[c].use=0;
 }
 void build(ll c, ll cl, ll cr){
 	if(cl == cr){
 		tree[c].mx = a[cl];
-		tree[c].set = -inf;
+		tree[c].set = 0;
 		tree[c].add = 0;
+		tree[c].use = 0;
 		return;
 	}
 	ll mid = cl+cr>>1;
@@ -70,6 +68,7 @@ void range_set(ll c, ll cl, ll cr, ll l, ll r, ll x){
 		tree[c].add=0;
 		tree[c].mx=x;
 		tree[c].set=x;
+		tree[c].use=1;
 		return;
 	}
 	pushdown(c);
@@ -108,7 +107,6 @@ int main(){
 	cin.tie(0);
 	cin>>n>>q;
 	rep(i,1,n+1)cin>>a[i];
-	rep(i,0,4*n+1)tree[i].set=-inf;
 	build(1,1,n);
 	while(q--){
 		ll op;cin>>op;
@@ -126,3 +124,4 @@ int main(){
 	}
 	return 0;
 }
+
