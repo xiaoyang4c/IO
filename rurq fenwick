@@ -1,0 +1,31 @@
+const ll maxn=222222;
+struct rurq{
+	ll tree1[maxn],tree2[maxn];
+	void update(ll l,ll r,ll val) {
+		int pos = r+1;
+		while (pos<maxn) {
+			tree1[pos]-=val;
+			tree2[pos]-=r*val;
+			pos+=lowbit(pos);
+		}
+		pos = l;
+		while (pos<maxn) {
+			tree1[pos]+=val;
+			tree2[pos]+=(l-1)*val;
+			pos+=lowbit(pos);
+		}
+	}
+	ll query(int pos) {
+		ll ret = 0;
+		int tmp = pos;
+		while (pos>0)	 {
+			ret += tree1[pos]*tmp;
+			ret -= tree2[pos];
+			pos-=lowbit(pos);
+		}
+		return ret;
+	}
+	ll query(int l,int r) {
+		return query(r)-query(l-1);
+	}
+}fw;
