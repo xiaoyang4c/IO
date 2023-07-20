@@ -58,7 +58,6 @@ int main(){
 		alist[b].pb(a);
 	}
 	memset(up,-1,sizeof up);
-	up[0][1]=-1;depth[1]=0;
 	dfs(1,-1);
 	cin>>q;
 	while(q--){
