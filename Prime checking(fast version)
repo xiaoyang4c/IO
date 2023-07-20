@@ -1,0 +1,23 @@
+l expo(ll a,ll b, ll m){
+	ll res=1;
+    while(b>0){
+        if(b&1)res=(res%m*a%m)%m;
+        a=(a%m*a%m)%m;
+        b>>=1;
+    }
+	return res;
+}
+mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
+
+void check_prime(ll n){
+	if(n==1 or n==0){cout<<"Not Prime";return;}
+	rep(i,0,100){
+		ll tmp=rng();
+		if((expo(tmp,n,n)-tmp+n)%n!=0){
+			cout<<"Not Prime";
+			return;
+		}
+	}
+	cout<<"Prime";
+	return;
+}
