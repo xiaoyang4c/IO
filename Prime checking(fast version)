@@ -11,9 +11,9 @@ mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 void check_prime(ll n){
 	if(n==1 or n==0){cout<<"Not Prime";return;}
-	rep(i,0,100){
+	rep(i,0,100){//100 times is usually good enough
 		ll tmp=rng();
-		if((expo(tmp,n,n)-tmp+n)%n!=0){
+		if((expo(tmp,n,n)-tmp+n)%n!=0){// Fermat's little theorem a^p-p≡0 when p is prime
 			cout<<"Not Prime";
 			return;
 		}
