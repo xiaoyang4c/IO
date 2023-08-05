@@ -88,3 +88,16 @@ int main(){
 	solve();
 	return 0;
 }
+
+//template 
+Let s = random(state) //get's any random valid state
+Let best = s
+while elapsed_time() <= time_limit:
+    Let t = temperature(elapsed_time()/time_limit) //returns temperature given the percent done
+    Let next = neighbor(s) //neighbor of a state
+    if value(s) < value(best):
+        best = s
+    if P(value(s), value(next), t) >= random(0, 1): //P -> probability of acceptance function, returns the probability that you'll move to the next state given the value's and the current temperature
+        s = next
+
+print(value(best))
