@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+ 
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf 1ll<<60
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+int lowbit(ll x) {return x&(-x);}
+ 
+
+const ll maxn=1e6+5;
+const ll block=1000;
+
+ll a[maxn],queries[maxn];
+struct query{
+	ll l,r,idx;
+};
+vector<query>qq;
+bool cmp(query a,query b){
+	if(a.l/block!=b.l/block){
+		return a.l/block<b.l/block;
+	}
+	else if(a.r!=b.r){
+		return a.r<b.r;
+	}
+}
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n,q;cin>>n>>q;
+	rep(i,1,n+1){
+		cin>>a[i];
+	}
+	rep(i,1,q+1){
+		query tmp;
+		cin>>tmp.l>>tmp.r;
+		tmp.idx=i;
+		qq.pb(tmp);
+	}
+	sort(ALL(qq),cmp);
+	ll curr_l=1,curr_r=0;
+	ll ans=0;
+	for(auto x:qq){
+		while(curr_l>x.l){
+			curr_l--;
+			ans+=a[curr_l];
+		}
+        while (curr_r < x.r) {
+            curr_r++;
+			ans+=a[curr_r];
+        }
+        while (curr_l < x.l) {
+            ans-=a[curr_l];
+            curr_l++;
+        }
+        while (curr_r > x.r) {
+            ans-=a[curr_r];
+            curr_r--;
+        }
+		queries[x.idx]=ans;
+	}
+	rep(i,1,q+1)cout<<queries[i]<<endl;
+	return 0;
+}
+
