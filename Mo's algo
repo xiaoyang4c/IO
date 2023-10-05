@@ -59,18 +59,18 @@ int main() {
 			curr_l--;
 			ans+=a[curr_l];
 		}
-        while (curr_r < x.r) {
-            curr_r++;
+       		while (curr_r < x.r) {
+            		curr_r++;
 			ans+=a[curr_r];
-        }
-        while (curr_l < x.l) {
-            ans-=a[curr_l];
-            curr_l++;
-        }
-        while (curr_r > x.r) {
-            ans-=a[curr_r];
-            curr_r--;
-        }
+        	}
+        	while (curr_l < x.l) {
+            		ans-=a[curr_l];
+            		curr_l++;
+        	}
+        	while (curr_r > x.r) {
+            		ans-=a[curr_r];
+            		curr_r--;
+        	}
 		queries[x.idx]=ans;
 	}
 	rep(i,1,q+1)cout<<queries[i]<<endl;
