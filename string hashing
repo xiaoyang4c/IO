@@ -10,3 +10,21 @@ long long compute_hash(string const& s) {
     return hash_value;
 }
 //depending on context can precompute the hash values and pow values
+//prefix sums of hash idea, no need mod inverse
+//idea: number of distinct permutations of N which appear as a substring of H at least once
+rep(i,0,m-n+1){
+		bool same=1;
+		rep(j,0,26){
+			if(cnt1[j]!=cnt2[j])same=false;
+		}
+		if(same){
+			ll curr_h=0;
+			inc(curr_h,h[i+n]);
+			dec(curr_h,h[i]);
+			curr_h=(curr_h*p_pow[m-i-1])%mod;
+			if(f[curr_h]==0)ans++;
+			f[curr_h]++;
+		}
+		cnt2[int(M[i]-'a')]--;
+		cnt2[int(M[i+n]-'a')]++;
+}
