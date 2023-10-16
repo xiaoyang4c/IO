@@ -1,5 +1,5 @@
 long long compute_hash(string const& s) {
-    const int p = 31;
+    const int p = 31; //about the same as the number of different characters for the string
     const int m = 1e9 + 9;
     long long hash_value = 0;
     long long p_pow = 1;
@@ -9,3 +9,4 @@ long long compute_hash(string const& s) {
     }
     return hash_value;
 }
+//depending on context can precompute the hash values and pow values
