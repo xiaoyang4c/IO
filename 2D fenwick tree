@@ -1,0 +1,28 @@
+const ll maxn=1111;
+ll tree[maxn][maxn];
+void update(ll x,ll y,ll val){
+	while(x<maxn){
+		ll yy=y;
+		while(yy<maxn){
+			tree[x][yy]+=val;
+			yy+=lowbit(yy);
+		}
+		x+=lowbit(x);
+	}
+}
+ll query(ll x,ll y){
+	ll ret=0;
+	while(x>0){
+		ll yy=y;
+		while(yy>0){
+			ret+=tree[x][yy];
+			yy-=lowbit(yy);
+		}
+		x-=lowbit(x);
+	}
+	return ret;
+}
+
+//to query:
+//ll y,x,yy,xx;cin>>y>>x>>yy>>xx;
+//cout<<query(yy,xx)-query(y-1,xx)-query(yy,x-1)+query(y-1,x-1)<<endl;
