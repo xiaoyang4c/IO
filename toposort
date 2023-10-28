@@ -19,11 +19,11 @@ void topsort(){
 }
 //to check if possible:
 rep(i,0,n)id[topo[i]]=i;
-	rep(i,1,n+1){
-		for(auto x:edge[i]){
-			if(id[x]<=id[i]){
-				cout<<"IMPOSSIBLE";
-				return 0;
-			}
+rep(i,1,n+1){
+	for(auto x:edge[i]){
+		if(id[x]<=id[i]){
+			cout<<"IMPOSSIBLE";
+			return 0;
 		}
 	}
+}
