@@ -1,0 +1,19 @@
+vector<int>alist[100000];
+int visited[100000];
+vector<int>topo;
+void dfs(int v){
+  visited[v]=true;
+  for(auto x: alist[v]){
+    if(!visited[x]){
+      dfs(x);
+    }
+  }
+  topo.pb(v);
+}
+void topsort(){
+  memset(visited,0,sizeof visited);
+  rep(i,0,n){
+    if(!visited[i])dfs(i);
+  }
+  reverse(ALL(topo));
+}
