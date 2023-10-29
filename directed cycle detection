@@ -1,0 +1,57 @@
+ 
+const ll maxn=111111;
+vector<ll>edge[maxn];
+ll color[maxn],p[maxn],vis[maxn];
+ll st=-1,ed;
+bool cycle=false;
+void dfs(ll u){
+	color[u]=1;
+	for(auto x:edge[u]){
+		if(cycle)return;
+		if(color[x]==0){
+			p[x]=u;
+			dfs(x);
+		}
+		else if(color[x]==1){
+			st=x;
+			ed=u;
+			cycle=true;
+			return;
+		}
+	}
+	color[u]=2;
+}
+void find_cycle(){
+	if(!cycle){
+		cout<<"IMPOSSIBLE";
+		exit(0);
+	}else{
+		vector<ll>cyc;
+		cyc.pb(st);
+		debug(st);debug(ed);
+		while(ed!=st){
+			cyc.pb(ed);
+			ed=p[ed];
+		}
+		cyc.pb(st);
+		reverse(ALL(cyc));
+		cout<<SZ(cyc)<<endl;
+		for(auto x:cyc)cout<<x<<" ";
+	}
+}
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	//freopen("i.txt","r",stdin);
+	ll n,m;cin>>n>>m;
+	memset(p,-1,sizeof p);
+	rep(i,0,m){
+		ll a,b;cin>>a>>b;
+		edge[a].pb(b);
+	}
+	rep(i,1,n+1){
+		if(!color[i])dfs(i);
+	}
+	find_cycle();
+	return 0;
+}
