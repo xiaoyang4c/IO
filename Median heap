@@ -9,8 +9,8 @@ void add(ll x){
 	else hi.insert(x);
 	maintain();
 }
-void rem(){//remove the median
-	lo.erase(--lo.end());
+void rem(ll x){//remove whichever element
+	lo.erase(lo.find(x));
 	maintain();
 }
 ll med(){
