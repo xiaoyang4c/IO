@@ -1,0 +1,18 @@
+ll n;
+multiset<ll>lo,hi;
+void maintain(){
+	while(SZ(lo)>SZ(hi)+1)hi.insert(*(--lo.end())),lo.erase(--lo.end());
+	while(SZ(hi)>SZ(lo))lo.insert(*hi.begin()),hi.erase(hi.begin());
+}
+void add(ll x){
+	if(hi.empty() or *hi.begin()>x)lo.insert(x);
+	else hi.insert(x);
+	maintain();
+}
+void rem(){//remove the median
+	lo.erase(--lo.end());
+	maintain();
+}
+ll med(){
+	return *(--lo.end());
+}
