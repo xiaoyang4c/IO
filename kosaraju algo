@@ -1,0 +1,48 @@
+const ll maxn=111111;
+vector<ll>edge[maxn],egde[maxn];
+vector<ll>topo;
+ll vis[maxn],id[maxn];
+ll num=0;
+void dff(ll u){
+	vis[u]=1;
+	for(auto x:edge[u]){
+		if(!vis[x]){
+			dff(x);
+		}
+	}
+	topo.pb(u);
+}
+void dfs(ll u){
+	vis[u]=1;
+	id[u]=num;
+	for(auto x:egde[u]){
+		if(!vis[x]){
+			dfs(x);
+		}
+	}
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n,m;cin>>n>>m;
+	rep(i,0,m){
+		ll a,b;cin>>a>>b;
+		edge[a].pb(b);// a can reach b
+		egde[b].pb(a);// b can be reached from a;
+	}
+	memset(vis,0,sizeof vis);
+	rep(i,1,n+1){
+		if(!vis[i])dff(i);
+	}
+	memset(vis,0,sizeof vis);
+	reverse(ALL(topo));//by decreasing endtime
+	for(auto x:topo){
+		if(!vis[x]){
+			num++;
+			dfs(x);
+		}
+	}
+	cout<<num<<endl;
+	rep(i,1,n+1)cout<<id[i]<<" ";
+	return 0;
+}
