@@ -1,0 +1,95 @@
+//A game has n rooms and m tunnels between them. Each room has a certain number of coins. What is the maximum number of coins you can collect while moving through the tunnels when you can freely choose your starting and ending room?
+const ll maxn=111111;
+vector<ll>edge[maxn],egde[maxn],edge_scc[maxn];
+vector<ll>topo,component;
+ll vis[maxn],val[maxn],val_scc[maxn];
+ll roots[maxn],memo[maxn];
+ll num=0,tot=0;
+void dff(ll u){
+	vis[u]=1;
+	for(auto x:edge[u]){
+		if(!vis[x]){
+			dff(x);
+		}
+	}
+	topo.pb(u);
+}
+void dfs(ll u){
+	vis[u]=1;
+	tot+=val[u];
+	component.pb(u);
+	for(auto x:egde[u]){
+		if(!vis[x]){
+			dfs(x);
+		}
+	}
+}
+ll dp(ll u){
+	if(memo[u]!=-1)return memo[u];
+	memo[u]=val_scc[u];
+	for(auto x:edge_scc[u]){
+		memo[u]=max(memo[u],dp(x)+val_scc[u]);
+	}
+	return memo[u];
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	//freopen("i.txt","r",stdin);
+	ll n,m;cin>>n>>m;
+	rep(i,1,n+1)cin>>val[i];
+	rep(i,0,m){
+		ll a,b;cin>>a>>b;
+		edge[a].pb(b);// a can reach b
+		egde[b].pb(a);// b can be reached from a;
+	}
+	memset(vis,0,sizeof vis);
+	rep(i,1,n+1){
+		if(!vis[i])dff(i);
+	}
+	memset(vis,0,sizeof vis);
+	reverse(ALL(topo));//by decreasing endtime
+	//debug(333);
+	for(auto u:topo){
+		if(!vis[u]){
+			tot=0;
+			dfs(u);
+			ll root=component.front();
+			val_scc[root]=tot;
+			for(auto x:component)roots[x]=root;
+			component.clear();
+		}
+	}
+	//debug(222);
+	rep(i,1,n+1){
+		for(auto x:edge[i]){
+			ll u=roots[i];
+			ll v=roots[x];
+			if(u!=v){
+				//edge_scc[u].pb(v);
+				edge_scc[v].pb(u);//reverse edges
+			}
+		}
+	}
+	//debug(111);
+	//rep(i,1,5)cout<<val_scc[i]<<" ";
+	//cout<<endl;
+	/*
+	rep(i,0,5){
+		cout<<i<<": ";
+		for(auto x:edge_scc[i]){
+			cout<<x<<" ";
+		}cout<<endl;
+	}
+	*/
+	memset(memo,-1,sizeof memo);
+	rep(i,1,n+1){
+		dp(i);
+	}
+	ll mx=0;
+	rep(i,1,n+1){
+		mx=max(mx,memo[i]);
+	}
+	cout<<mx<<endl;
+	return 0;
+}
