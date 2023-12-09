@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+ 
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf 1ll<<60
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define mod 998244353
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+int prod(ll a,ll b) {return ll(a)*ll(b)%mod;}
+int lowbit(ll x) {return x&(-x);}
+ll p0w(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+const ll maxn=222222;
+ll tree[maxn<<2];
+
+void update(ll c,ll cl,ll cr,ll p,ll val){
+	if(cl==cr){
+		tree[c]=val;
+		return;
+	}
+	ll mid=(cl+cr)>>1;
+	if(p<=mid)update(c<<1,cl,mid,p,val);
+	else update(c<<1|1,mid+1,cr,p,val);
+	tree[c]=min(tree[c<<1],tree[c<<1|1]);
+}
+
+ll query(ll c,ll cl,ll cr,ll l,ll r){
+	if(l<=cl and cr<=r)return tree[c];
+	ll mid=(cl+cr)>>1;
+	ll ret=inf;
+	if(l<=mid)ret=min(ret,query(c<<1,cl,mid,l,r));
+	if(r>mid)ret=min(ret,query(c<<1|1,mid+1,cr,l,r));
+	return ret;
+}
+ll get(ll c,ll cl,ll cr,ll l,ll r,ll val){
+	if(cl>r or cr<l)return inf;
+	if(tree[c]>val)return inf;
+	if(cl==cr)return cl;
+	ll mid=(cl+cr)>>1;
+	ll lft=get(c<<1,cl,mid,l,r,val);
+	if(lft!=inf)return lft;
+	ll rht=get(c<<1|1,mid+1,cr,l,r,val);
+	return rht;
+}
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	//freopen("i.txt","r",stdin);
+	ll n,m;cin>>n>>m;
+	rep(i,0,4*maxn)tree[i]=inf;
+	while(m--){
+		char op;cin>>op;
+		if(op=='M'){
+			ll x,a;cin>>x>>a;
+			update(1,1,n,a,x);
+		}else{
+			ll y,b;cin>>y>>b;
+			ll ans=get(1,1,n,b,n,y);
+			if(ans==inf)cout<<-1<<endl;
+			else cout<<ans<<endl;
+		}
+	}
+	return 0;
+}
+
