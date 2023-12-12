@@ -76,3 +76,45 @@ int main(){
 	return 0;
 }
 
+
+-----------------------------------------------------------
+const ll maxn=3e7+5;
+ll tree[maxn],lc[maxn],rc[maxn];
+ll tot=1;
+ll idx;
+void update(ll &c,ll cl,ll cr,ll p,ll val){
+	if(c==-1){
+		c=++tot;
+		tree[c]=cr-cl+1;
+	}
+	if(cl==cr){
+		tree[c]+=val;
+		return;
+	}
+	ll mid=(cl+cr)>>1;
+	if(p<=mid)update(lc[c],cl,mid,p,val);
+	else update(rc[c],mid+1,cr,p,val);
+	tree[c]=tree[lc[c]]+tree[rc[c]];
+}
+
+ll query(ll c,ll cl,ll cr,ll l,ll r){
+	if(c==-1)return 0;
+	if(l<=cl and cr<=r)return tree[c];
+	ll mid=(cl+cr)>>1;
+	ll ret=0;
+	if(l<=mid)ret+=query(lc[c],cl,mid,l,r);
+	if(r>mid)ret+=query(rc[c],mid+1,cr,l,r);
+	return ret;
+}
+ll get(ll c,ll cl,ll cr,ll val){
+	if(cl==cr)return cr;
+	if(c==-1){
+		c=++tot;
+		tree[c]=cr-cl+1;
+	}
+	ll mid=(cl+cr)>>1;
+	if(lc[c]==-1)lc[c]=++tot,tree[lc[c]]=mid-cl+1;
+	if(rc[c]==-1)rc[c]=++tot,tree[rc[c]]=cr-mid;
+	if(tree[lc[c]]>=val)return get(lc[c],cl,mid,val);
+	else return get(rc[c],mid+1,cr,val-tree[lc[c]]);
+}
