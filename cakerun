@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+ 
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define pq priority_queue
+#define inf 1ll<<60
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define SZ(x) (int(x.size()))
+#define mod 1000000007
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+void inc(ll &a,ll b) {a=(a+b)%mod;}
+void dec(ll &a,ll b) {a=(a-b+mod)%mod;}
+int prod(ll a,ll b) {return ll(a)*ll(b)%mod;}
+int lowbit(ll x) {return x&(-x);}
+ll p0w(ll base,ll p) {ll ret=1;while(p>0){if (p%2ll==1ll) ret=ret*base%mod;base=base*base%mod;p/=2ll;}return ret;}
+
+
+unordered_map<ll,set<pll>>mp;
+set<pair<pll,ll>>s;
+
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	//freopen("i.txt","r",stdin);
+	ll n;cin>>n;
+	rep(i,1,n+1){
+		ll x;cin>>x;
+		mp[x].insert(MP(i,i));
+		s.insert(MP(MP(i,i),x));
+	}
+	ll q;cin>>q;
+	while(q--){
+		ll op;cin>>op;
+		ll l,r,c;cin>>l>>r>>c;
+		if(op==1){
+			auto it=mp[c].lower_bound(MP(l,0ll));
+			ll ans=inf;
+			if(it!=mp[c].end() and it->fi<=r){
+				ans=min(ans,it->fi);
+			}
+			if(it!=mp[c].begin() and (--it)->se>=l){
+				ans=min(ans,l);
+			}
+			if(ans==inf)cout<<-1<<endl;
+			else cout<<ans<<endl;
+		}else{
+			auto it=s.lower_bound(MP(MP(l,0ll),0ll));
+			if(it->fi.fi!=l)it--;
+			//find the first range containing l
+			vector<pair<pll,ll>>ranges;
+			while(it!=s.end() and it->fi.fi<=r){
+				ranges.pb(*it);
+				it++;
+			}
+			for(auto x:ranges){
+				s.erase(x);
+				mp[x.se].erase(x.fi);
+			}
+			if(!ranges.empty()){
+				auto st=ranges[0];
+				auto ed=ranges[SZ(ranges)-1];
+				if(st.fi.fi<=l-1){
+					mp[st.se].insert(MP(st.fi.fi,l-1));
+					s.insert(MP(MP(st.fi.fi,l-1),st.se));
+				}
+				if(r+1<=ed.fi.se){
+					mp[ed.se].insert(MP(r+1,ed.fi.se));
+					s.insert(MP(MP(r+1,ed.fi.se),ed.se));
+				}
+			}
+			mp[c].insert(MP(l,r));
+			s.insert(MP(MP(l,r),c));
+		}
+	}
+	return 0;
+}
