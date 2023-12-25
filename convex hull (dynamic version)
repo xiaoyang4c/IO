@@ -28,3 +28,5 @@ struct LineContainer : multiset<Line, less<>> {
 		return l.k * x + l.m;
 	}
 };
+
+//If u need query min instead, insert -mx-c (instead of mx + c) and take negative of what u query.
