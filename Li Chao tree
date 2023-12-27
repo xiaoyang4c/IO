@@ -1,105 +1,34 @@
-#pragma GCC optimize("O3,unroll-loops")
-#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
-#include<bits/stdc++.h>
-using namespace std;
-#define fi first
-#define se second
-#define SZ(x) ((long long)(x).size())
-#define rep(i,a,b) for (long long i=(a);i<(b);i++)
-#define pq priority_queue
-#define MP make_pair
-#define pb push_back
-#define ALL(x) (x).begin(),(x).end()
-#define ll long long
-#define pii pair<int,int>
-#define debug(x) cerr<<#x<<"="<<x<<"\n"
-#define endl "\n";
-
-// do note that for lichao tree, the maximum size of tree is the maximum query value
-
-// for max queries 
-const ll maxn=1e6+5;
 struct line{
-	ll m=0,c=-1e18;
-	ll operator()(ll x){return m*x+c;}
+    ll m, c;
+    line(): m(0), c(-4e18){}
+    line(ll m, ll c): m(m), c(c){}
+    ll operator()(ll x){return m*x+c;}
+    bool operator==(line y){return m==y.m && c==y.c;}
 };
-line tree[maxn<<2];
-void insert(ll idx,ll l,ll r,line y){
-	if(l==r)return;
-	ll mid=l+r>>1;
-	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
-  	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
-  	if(y(l)>tree[idx](l))insert(idx*2,l,mid,y);
-  	else insert(idx*2+1,mid+1,r,y);
-}
-ll query(ll idx,ll l, ll r, ll x){
-	if(l==r)return tree[idx](x);
-	ll mid=l+r>>1;
-	if(x<=mid)return max(tree[idx](x),query(idx*2,l,mid,x));
-	return max(tree[idx](x),query(idx*2+1,mid+1,r,x));
-}
+struct node{
+    int s, e, m; // note for li chao, it should be [s, e)
+    line sth; // line that maximises at m.
+    node *l, *r;
+    node(int s, int e): s(s), e(e), m((s+e)>>1), l(nullptr), r(nullptr){}
+    void create(){
+        if (l != nullptr) return;
+        l = new node(s, m);
+        r = new node(m, e);
+    }
+    void update(line nl){
+        bool lft = nl(s) > sth(s), mid = nl(m) > sth(m), rgt = nl(e) > sth(e);
+        if (mid) swap(nl, sth);
+        if (e - s == 1 || nl == line() || lft == rgt) return;
+        create();
+        if (lft != mid) l->update(nl); // intersection at left half
+        else r->update(nl); // intersection at right half
+    }
+    ll query(int x){
+        if (e-s==1) return sth(x);
+        if (l == nullptr) return sth(x);
+        if (x < m) return max(sth(x), l->query(x));
+        else return max(sth(x), r->query(x));
+    }
+} *root;
 
-int main(){
-    ios::sync_with_stdio(0);
-	cin.tie(0);
-    ll n;cin>>n;
-    while(n--){
-		ll o;cin>>o;
-		if(o==1){
-			line y;cin>>y.m>>y.c;
-			insert(1,0,maxn,y);
-		}else{
-			ll x;cin>>x;
-			cout<<query(1,0,maxn,x)<<endl;
-		}
-	}
-	return 0;
-}
-
-// min queries 
-const ll maxn=1e6+5;
-struct line{
-	ll m=0,c=1e18;
-	ll operator()(ll x){return m*x+c;}
-};
-line tree[maxn<<2];
-void insert(ll idx,ll l,ll r,line y){
-  	if(l==r)return;
-    ll mid=(l+r)>>1;
-    if(y(mid)<tree[idx](mid))swap(y,tree[idx]);
-	if(y(l)>tree[idx](l) and y(r)>tree[idx](r))return ;
-    if(y(l)<tree[idx](l))insert(idx*2,l,mid,y);
-    else insert(idx*2+1,mid+1,r,y);
-}
-ll query(ll idx,ll l, ll r, ll x){
-	if(l==r)return tree[idx](x);
-	ll mid=l+r>>1;
-	if(x<=mid)return min(tree[idx](x),query(idx*2,l,mid,x));
-	return min(tree[idx](x),query(idx*2+1,mid+1,r,x));
-}
-
-//动态开点
-const ll maxn=1e6+5;
-struct line{
-	ll m=0,c=-1e18;
-	ll operator()(ll x){return m*x+c;}
-};
-line tree[maxn];
-ll lc[maxn],rc[maxn],tot=1;
-void insert(ll &idx,ll l,ll r,line y){
-	if(idx==-1)idx=++tot;
-	if(l==r)return;
-	ll mid=l+r>>1;
-	if(tree[idx](mid)<y(mid))swap(tree[idx],y);
-  	if(y(l)<tree[idx](l) and y(r)<tree[idx](r))return;
-  	if(y(l)>tree[idx](l))insert(lc[idx],l,mid,y);
-  	else insert(rc[idx],mid+1,r,y);
-}
-ll query(ll idx,ll l, ll r, ll x){
-	if(idx==-1)return -inf;
-	if(l==r)return tree[idx](x);
-	ll mid=l+r>>1;
-	if(x<=mid)return max(tree[idx](x),query(lc[idx],l,mid,x));
-	return max(tree[idx](x),query(rc[idx],mid+1,r,x));
-}
-
+root=new node(-1e9,1e9+1);
