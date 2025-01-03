@@ -1,0 +1,74 @@
+const ll maxn = 1e6+5;
+
+ll sz[maxn],dep[maxn];//min depth for each dist[i],need to be up to max val of k
+ll n,k,ans=1e18;
+set<pll>alist[maxn];
+vector<ll>used;
+vector<pll>tmp;//all the distance,depth pair in the subtree
+
+void dfs(ll u,ll p){
+	sz[u]=1;
+	for(auto x:alist[u]){
+		if(x.fi==p)continue;
+		dfs(x.fi,u);
+		sz[u]+=sz[x.fi];
+	}
+}
+
+ll centroid(ll u,ll p,ll s){//s is size of initial tree
+	for(auto x:alist[u]){
+		if(x.fi==p)continue;
+		if(sz[x.fi]>s/2){
+			return centroid(x.fi,u,s);
+		}
+	}
+	return u;
+}
+
+void check(ll u,ll p,ll d,ll e){//dist and edges
+	if(d>k)return;//dont care if distance>k
+	ans=min(ans,dep[k-d]+e);//values from all the prev subtrees we visited so far
+	tmp.pb(MP(d,e));
+	for(auto x:alist[u]){
+		if(x.fi==p)continue;
+		check(x.fi,u,d+x.se,e+1);
+	}
+}
+//centroid property: lca of 2 nodes in centroid tree of 2 nodes lie on path of 2 nodes on original tree
+//since recursion is alr tree structure, you need not literally make a centroid tree in an adj list
+void build(ll u,ll p,ll d){
+	dfs(u,p);
+	ll c=centroid(u,p,sz[u]);
+	for(auto x:used)dep[x]=1e18;//reset from previously
+	used.clear();
+	for(auto x:alist[c]){//check the subtrees from left to right
+		tmp.clear();
+		check(x.fi,c,x.se,1);
+		for(auto i:tmp){
+			dep[i.fi]=min(dep[i.fi],i.se);
+			used.pb(i.fi);//all the possible distances in current tree, must reset after next division
+		}
+	}
+	//delete centroid
+	vector<pll>clist;
+	for(auto x:alist[c])clist.pb(x);
+	for(auto x:clist){//you cannot iterate and erase from set or else rte prob
+		alist[x.fi].erase(MP(c,x.se));
+		alist[c].erase(x);
+		build(x.fi,c,x.se);
+	}
+	
+}
+int best_path(int N, int K, int H[][2], int L[]){
+	n=N;k=K;
+	rep(i,0,n-1){
+		ll a=H[i][0],b=H[i][1],c=L[i];
+		alist[a].insert(MP(b,c));
+		alist[b].insert(MP(a,c));
+	}
+	//make sure dep[0]=0
+	rep(i,1,k+1)dep[i]=1e18;
+	build(0,-1,0);
+	if(ans==1e18)return -1;
+	return ans;
+}
