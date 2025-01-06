@@ -1,0 +1,78 @@
+const ll maxn = 1e5+5;
+
+ll n,m;
+ll sz[maxn],dep[maxn],vis[maxn],mn[maxn];
+//mn[x] is the min dist (original tree) from x to red node in subtree (centroid tree) of node x
+vector<ll>alist[maxn];
+vector<pll>path[maxn];
+vector<ll>used;
+
+void dfs(ll u,ll p){
+	sz[u]=1;
+	used.pb(u);
+	for(auto x:alist[u]){
+		if(x==p or vis[x])continue;
+		dfs(x,u);
+		sz[u]+=sz[x];
+	}
+}
+
+ll centroid(ll u,ll p,ll s){//s is size of initial tree
+	for(auto x:alist[u]){
+		if(x==p or vis[x])continue;
+		if(sz[x]>s/2){
+			return centroid(x,u,s);
+		}
+	}
+	return u;
+}
+
+void dfs1(ll u,ll p){
+	for(auto x:alist[u]){
+		if(x==p or vis[x])continue;
+		dep[x]=dep[u]+1;
+		dfs1(x,u);
+	}
+}
+
+void decomp(ll u,ll p){
+	while(!used.empty())used.pop_back();
+	dfs(u,p);
+	ll c = centroid(u,p,sz[u]);//find centroid
+	
+	dep[c]=0;
+	dfs1(c,-1);//depth of all nodes wrt centroid in subtree of centroid tree
+	vis[c]=1;
+	for(auto x:used){//path x is the path up the centroid tree for x, stores all the centroids above the node in the centroid tree
+		path[x].pb(MP(c,dep[x]));//all the nodes here are in subtree of x in centroid tree
+		if(x==1)mn[c]=dep[x];//because the first node is red in this qn
+	}
+	for(auto x:alist[c]){//build next layer of centroid tree
+		if(vis[x]==1)continue;//vis[i] is true if its a removed centroid
+		decomp(x,c);
+	}
+}
+
+int main(){
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	ll n,m;cin>>n>>m;
+	memset(mn,63,sizeof mn);
+	rep(i,0,n-1){
+		ll a,b;cin>>a>>b;
+		alist[a].pb(b);
+		alist[b].pb(a);
+	}
+	decomp(1,-1);
+	while(m--){
+		ll a,b;cin>>a>>b;
+		if(a==1){//paint a blue node red
+			for(auto x:path[b])mn[x.fi]=min(mn[x.fi],x.se);
+		}else{//walk up the centroid tree
+			ll ans=1e18;
+			for(auto x:path[b])ans=min(ans,mn[x.fi]+x.se);
+			cout<<ans<<endl;
+		}
+	}
+	return 0;
+}
