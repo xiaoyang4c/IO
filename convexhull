@@ -26,7 +26,7 @@ struct pt{
 };
 
 ll orientation(pt a, pt b, pt c){
-    long double v = a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y-b.y); //cross product
+    long double v = a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y-b.y); //cross product to get the z coordinate for (x1,y1,z1) x (x2,y2,z2)
     if(v<0)return -1; //clockwise
     if(v>0)return 1; //anti clockwise
     return 0; //collinear
@@ -48,7 +48,7 @@ void convex_hull(){
     }
     vector<pt>a(n);
     rep(i,0,n)cin>>a[i].x>>a[i].y;
-    bool include_collinear=0; //for the case where the last 2 points and the starting point are collinear
+    bool include_collinear=0; //for the case where the last group of points and the starting point are collinear
     
     pt p0 = *min_element(a.begin(), a.end(), [](pt a, pt b) {
         return make_pair(a.y, a.x) < make_pair(b.y, b.x); //sort y coordinates by increasing order
