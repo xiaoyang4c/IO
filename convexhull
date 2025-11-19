@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<long long,long long>
+#define pb push_back
+#define debug(x) cerr<<#x<<"="<<x<<endl
+#define inf 1ll<<60
+#define rep(i,a,b) for (ll i=a;i<(b);i++)
+#define MP make_pair
+#define mod (ll)998244353
+#define SZ(x) (int(x.size()))
+#define ALL(x) x.begin(),x.end()
+#define endl "\n"
+ll lowbit(ll x) {return x&(-x);}
+
+struct pt{
+    long double x,y;
+    bool operator == (pt const& t) const{
+        return x==t.x and y==t.y;
+    }
+};
+
+ll orientation(pt a, pt b, pt c){
+    long double v = a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y-b.y); //cross product
+    if(v<0)return -1; //clockwise
+    if(v>0)return 1; //anti clockwise
+    return 0; //collinear
+}
+
+bool cw(pt a, pt b, pt c, bool include_collinear){
+    ll o = orientation(a, b, c);
+    return o < 0 or (include_collinear and o == 0);
+}
+
+bool collinear(pt a, pt b, pt c){return orientation(a, b, c) == 0;}
+
+ll ok=1;
+void convex_hull(){
+    ll n;cin>>n;
+    if(n==0){
+        ok=0;
+        return;
+    }
+    vector<pt>a(n);
+    rep(i,0,n)cin>>a[i].x>>a[i].y;
+    bool include_collinear=0;
+    
+    pt p0 = *min_element(a.begin(), a.end(), [](pt a, pt b) {
+        return make_pair(a.y, a.x) < make_pair(b.y, b.x); //sort y coordinates by increasing order
+    });
+    
+    sort(a.begin(), a.end(), [&p0](const pt& a, const pt& b) {
+        ll o = orientation(p0, a, b);
+        if (o == 0)
+            return (p0.x-a.x)*(p0.x-a.x) + (p0.y-a.y)*(p0.y-a.y)
+                < (p0.x-b.x)*(p0.x-b.x) + (p0.y-b.y)*(p0.y-b.y);
+        return o < 0;
+    });
+    
+    if (include_collinear) {
+        ll i = (ll)a.size()-1;
+        while (i >= 0 and collinear(p0, a[i], a.back())) i--;
+        reverse(a.begin()+i+1, a.end());
+    }
+
+    vector<pt> st;
+    rep(i,0,SZ(a)) {
+        while (st.size() > 1 and !cw(st[st.size()-2], st.back(), a[i], include_collinear))st.pop_back();
+        st.push_back(a[i]);
+    }
+
+    if (include_collinear == false and st.size() == 2 and st[0] == st[1])st.pop_back();
+    a = st; //a is in clockwise order
+    reverse(ALL(a));
+    cout<<SZ(a)<<endl;
+    for(auto z:a)cout<<z.x<<" "<<z.y<<endl;
+    return;
+}
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    while(ok){
+        convex_hull();
+    }
+    return 0;
+}
